@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const NewsListBlock = styled.div`
   box-sizing: border-box;
-  padding-botton: 3rem;
+  padding-bottom: 3rem;
   width: 768ox;
   margin: 0 auto;
   margin-top: 2rem;
@@ -17,7 +17,7 @@ const NewsListBlock = styled.div`
   }
 `;
 
-const NewsList = () => {
+const NewsList = ({ category }) => {
   const [articles, setArticles] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -25,31 +25,32 @@ const NewsList = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const query = category === 'all' ? '' : `&category=${category}`;
         const response = await axios.get(
-          'https://newsapi.org/v2/top-headlines?country=kr&apiKey=24f4aac414cd4e87abc12773c62d43e1',
+          `https://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=24f4aac414cd4e87abc12773c62d43e1`,
         );
         setArticles(response.data.articles);
       } catch (e) {
-          console.log(e);
+        console.log(e);
       }
       setLoading(false);
     };
     fetchData();
-  }, []);
+  }, [category]);
 
-  if(loading) {
-      return <NewsListBlock>Loading...</NewsListBlock>
+  if (loading) {
+    return <NewsListBlock>Loading...</NewsListBlock>;
   }
 
-  if(!articles){
-      return null;
+  if (!articles) {
+    return null;
   }
 
   return (
     <NewsListBlock>
-        {articles.map( article => (
-            <NewsItem key={article.url} article={article}/>
-        ))}
+      {articles.map(article => (
+        <NewsItem key={article.url} article={article} />
+      ))}
     </NewsListBlock>
   );
 };
